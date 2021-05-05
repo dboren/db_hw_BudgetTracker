@@ -7,3 +7,6 @@ const FILES_TO_CACHE = [
     '/icons/icon-512x512.png',
 
 ];
+
+const PRECACHE = 'precache-v1';
+const RUNTIME = 'runtime';
