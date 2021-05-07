@@ -17,3 +17,8 @@ request.onupgradeneeded = function (event) {
         db.createObjectStore('BudgetTrackerStore', { autoIncrement: true });
     }
 };
+
+request.onerror = function (err) {
+    console.log(`Error: ${err.target.errorCode}`);
+  };
+
