@@ -1,3 +1,5 @@
+const { response } = require("express");
+
 let db;
 let budgetVersion;
 
@@ -22,3 +24,36 @@ request.onerror = function (err) {
     console.log(`Error: ${err.target.errorCode}`);
   };
 
+function checkDatabase() {
+    console.log('check database invoked');
+
+    let transaction = db.transaction(['BudgetTrackerStore'], 'readwrite');
+
+    const store = transaction.objectStore('BudgetTrackerStore');
+
+    const getAll = store.getAll();
+
+    getAll.onsuccess = function () {
+        if (getAll.result.length > 0) {
+            fetch('/api/transaction/bulk', {
+                method: 'POST',
+                body: JSON.stringify(getAll.result),
+                headers: {
+                    Accept: 'application/json, text/plain, */*',
+                    'Content-Type': 'application/json',
+                },
+            }).then((response) => response.json())
+            .then((res) => {
+                if (res.length !== 0) {
+                    transaction = db.transaction(['BudgetTrackerStore'], 'readwrite');
+
+                    const currentStore = transaction.objectStore('BudgetTrackerStore');
+
+                    currentStore.clear();
+                    console.log('Clearing current store');
+                }
+
+            });
+        }
+    };
+};
