@@ -57,3 +57,13 @@ function checkDatabase() {
         }
     };
 };
+
+request.onsuccess = function (event) {
+    console.log('Database request successful');
+    db = event.target.result;
+
+    if (navigator.onLine) {
+        console.log('Backend online');
+        checkDatabase();
+    }
+};
