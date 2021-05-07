@@ -1,5 +1,3 @@
-const { response } = require("express");
-
 let db;
 let budgetVersion;
 
@@ -20,8 +18,8 @@ request.onupgradeneeded = function (event) {
     }
 };
 
-request.onerror = function (err) {
-    console.log(`Error: ${err.target.errorCode}`);
+request.onerror = function (event) {
+    console.log(`Error: ${event.target.errorCode}`);
   };
 
 function checkDatabase() {
@@ -67,3 +65,15 @@ request.onsuccess = function (event) {
         checkDatabase();
     }
 };
+
+const saveRecord = (record) => {
+    console.log('saving record');
+
+    const transaction = db.transaction(['BudgetTrackerStore'], 'readwrite');
+
+    const store = transaction.objectStore('BudgetTrackerStore');
+
+    store.add(record);
+};
+
+window.addEventListener('online', checkDatabase);
