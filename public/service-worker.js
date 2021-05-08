@@ -21,6 +21,19 @@ const DATA_CACHE = 'data-cache-v1';
 //     );
 // });
 
+self.addEventListener('install', function (event) {
+    event.waitUntil(
+        caches.open(DATA_CACHE).then((cache) => cache.add('/api/transaction')
+        )
+    );
+
+    event.waitUntil(
+        caches.open(STATIC_CACHE).then((cache) => cache.addAll(FILES_TO_CACHE))
+    );
+
+    self.skipWaiting();
+});
+
 // self.addEventListener('activate', (event) => {
 //     const currentCaches = [PRECACHE, RUNTIME];
 //     event.waitUntil(
