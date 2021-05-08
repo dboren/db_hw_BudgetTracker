@@ -54,6 +54,23 @@ self.addEventListener('install', function (event) {
 //     );       
 // });
 
+self.addEventListener('activate', function(event) {
+    event.waitUntil(
+        caches.keys().then(keyList => {
+            return Promise.all(
+                keyList.map(key => {
+                    if (key !== STATIC_CACHE && key !== DATA_CACHE) {
+                        console.log("removing old cache data", key);
+                        return caches.delete(key);
+                    }
+                })
+            );
+        })
+    );
+
+    self.clients.claim();
+});
+
 
 // self.addEventListener('fetch', function(event) {
 //     if (event.request.url.includes('/api/')) {
